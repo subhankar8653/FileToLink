@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ file_name }} - Suhani Bot</title>
+    <meta name="theme-color" content="#1a1a2e">
+    
+    <!-- Favicon -->
+    <link rel="icon" href="https://i.ibb.co/mVkSySr7/suhani-bot.png">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            word-break: break-word;
+        }
+        
+        .brand {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+        
+        /* Video Container */
+        .video-wrapper {
+            position: relative;
+            background: #000;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            aspect-ratio: 16/9;
+        }
+        
+        #videoPlayer {
+            width: 100%;
+            height: 100%;
+            display: none;
+        }
+        
+        /* Countdown Overlay */
+        .countdown-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.9);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+        }
+        
+        .countdown-number {
+            font-size: 80px;
+            font-weight: bold;
+            color: #f85032;
+            animation: pulse 1s ease-in-out;
+        }
+        
+        .countdown-text {
+            font-size: 18px;
+            color: #ccc;
+            margin-top: 20px;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.2); opacity: 0.8; }
+        }
+        
+        /* Placeholder */
+        .video-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+        }
+        
+        .placeholder-icon {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+        
+        /* Video Controls */
+        .custom-controls {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0,0,0,0.8));
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .video-wrapper:hover .custom-controls {
+            opacity: 1;
+        }
+        
+        .play-btn, .fullscreen-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+        
+        .play-btn:hover, .fullscreen-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1);
+        }
+        
+        .progress-bar {
+            flex: 1;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 5px;
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .progress-filled {
+            height: 100%;
+            background: #f85032;
+            border-radius: 5px;
+            width: 0%;
+            transition: width 0.1s;
+        }
+        
+        /* Action Buttons */
+        .actions {
+            background: rgba(30, 30, 46, 0.9);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .download-btn {
+            display: block;
+            width: 100%;
+            background: linear-gradient(135deg, #f85032 0%, #e73827 100%);
+            color: white;
+            text-align: center;
+            padding: 16px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 16px;
+            margin-bottom: 15px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(248, 80, 50, 0.4);
+        }
+        
+        .button-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .action-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .action-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        /* Players Section */
+        .players-section {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .players-title {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #f85032;
+            margin-bottom: 15px;
+        }
+        
+        .player-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+        
+        .player-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #ccc;
+            padding: 12px 8px;
+            border-radius: 8px;
+            font-size: 13px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+        
+        .player-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+        
+        .player-icon {
+            width: 16px;
+            height: 16px;
+        }
+        
+        /* Footer */
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .footer-brand {
+            color: #f85032;
+            font-weight: 600;
+        }
+        
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.9);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .toast.show {
+            opacity: 1;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+            
+            .header h1 {
+                font-size: 18px;
+            }
+            
+            .countdown-number {
+                font-size: 60px;
+            }
+            
+            .player-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>{{ file_name }}</h1>
+            <div class="brand">
+                <span>🛡️</span>
+                <span>Suhani Bot</span>
+            </div>
+        </div>
+        
+        <!-- Video Player -->
+        <div class="video-wrapper" id="videoWrapper">
+            <!-- Countdown Overlay -->
+            <div class="countdown-overlay" id="countdownOverlay">
+                <div class="countdown-number" id="countdownNumber">5</div>
+                <div class="countdown-text">Video loading...</div>
+            </div>
+            
+            <!-- Video Placeholder -->
+            <div class="video-placeholder" id="videoPlaceholder">
+                <svg class="placeholder-icon" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/>
+                </svg>
+                <p>If video not playing</p>
+                <p style="opacity: 0.7; font-size: 14px; margin-top: 5px;">Use External Player</p>
+            </div>
+            
+            <!-- HTML5 Video -->
+            <video id="videoPlayer" controls controlsList="nodownload" preload="metadata">
+                <source src="{{ src }}" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            
+            <!-- Custom Controls (with Fullscreen) -->
+            <div class="custom-controls" id="customControls">
+                <button class="play-btn" id="playBtn" onclick="togglePlay()">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path id="playIcon" d="M8 5v14l11-7z"/>
+                    </svg>
+                </button>
+                <div class="progress-bar" id="progressBar" onclick="seek(event)">
+                    <div class="progress-filled" id="progressFilled"></div>
+                </div>
+                <button class="fullscreen-btn" onclick="toggleFullscreen()">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Actions -->
+        <div class="actions">
+            <a href="{{ src }}" download="{{ file_name }}" class="download-btn">
+                ⬇ Download
+            </a>
+            
+            <div class="button-grid">
+                <button class="action-btn" onclick="copyLink()">
+                    📋 Copy Link
+                </button>
+                <button class="action-btn" onclick="shareLink()">
+                    📤 Share
+                </button>
+            </div>
+            
+            <!-- External Players -->
+            <div class="players-section">
+                <div class="players-title">• Open in External Player</div>
+                <div class="player-grid">
+                    <!-- Android Players -->
+                    <a href="vlc://{{ src }}" class="player-btn">
+                        <span class="player-icon">▶</span>
+                        VLC
+                    </a>
+                    <a href="mxplayer://{{ src }}" class="player-btn">
+                        <span class="player-icon">▶</span>
+                        MX Player
+                    </a>
+                    <a href="intent:{{ src }}#Intent;package=com.mxtech.videoplayer.pro;end" class="player-btn">
+                        <span class="player-icon">▶</span>
+                        MX Pro
+                    </a>
+                    <a href="nplayer-{{ src }}" class="player-btn">
+                        <span class="player-icon">▶</span>
+                        nPlayer
+                    </a>
+                    <a href="intent:{{ src }}#Intent;package=org.courville.nova;end" class="player-btn">
+                        <span class="player-icon">▶</span>
+                        Nova
+                    </a>
+                    <a href="intent:{{ src }}#Intent;package=is.xyz.mpv;end" class="player-btn">
+                        <span class="player-icon">▶</span>
+                        MPV
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <div class="footer">
+            <span>© <span id="year"></span> <span class="footer-brand">Suhani Bot</span></span>
+            <br>
+            <span style="opacity: 0.5; font-size: 12px; margin-top: 5px; display: inline-block;">Made with 🛡️</span>
+        </div>
+    </div>
+    
+    <!-- Toast for notifications -->
+    <div class="toast" id="toast"></div>
+    
+    <script>
+        const videoPlayer = document.getElementById('videoPlayer');
+        const videoWrapper = document.getElementById('videoWrapper');
+        const countdownOverlay = document.getElementById('countdownOverlay');
+        const countdownNumber = document.getElementById('countdownNumber');
+        const videoPlaceholder = document.getElementById('videoPlaceholder');
+        const progressBar = document.getElementById('progressBar');
+        const progressFilled = document.getElementById('progressFilled');
+        const playIcon = document.getElementById('playIcon');
+        
+        // Set year
+        document.getElementById('year').textContent = new Date().getFullYear();
+        
+        // 5-Second Countdown
+        let countdown = 5;
+        const countdownInterval = setInterval(() => {
+            countdown--;
+            countdownNumber.textContent = countdown;
+            
+            if (countdown <= 0) {
+                clearInterval(countdownInterval);
+                countdownOverlay.style.display = 'none';
+                videoPlayer.style.display = 'block';
+                videoPlayer.play().catch(e => {
+                    console.log('Autoplay blocked:', e);
+                    showToast('Click play to start video');
+                });
+            }
+        }, 1000);
+        
+        // Play/Pause Toggle
+        function togglePlay() {
+            if (videoPlayer.paused) {
+                videoPlayer.play();
+                playIcon.setAttribute('d', 'M6 4h4v16H6V4zm8 0h4v16h-4V4z'); // Pause icon
+            } else {
+                videoPlayer.pause();
+                playIcon.setAttribute('d', 'M8 5v14l11-7z'); // Play icon
+            }
+        }
+        
+        // Update progress bar
+        videoPlayer.addEventListener('timeupdate', () => {
+            const percent = (videoPlayer.currentTime / videoPlayer.duration) * 100;
+            progressFilled.style.width = percent + '%';
+        });
+        
+        // Seek functionality
+        function seek(e) {
+            const rect = progressBar.getBoundingClientRect();
+            const pos = (e.clientX - rect.left) / rect.width;
+            videoPlayer.currentTime = pos * videoPlayer.duration;
+        }
+        
+        // Fullscreen Toggle
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                videoWrapper.requestFullscreen().catch(err => {
+                    showToast('Fullscreen not supported');
+                });
+            } else {
+                document.exitFullscreen();
+            }
+        }
+        
+        // Copy Link
+        function copyLink() {
+            const link = "{{ src }}";
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(link).then(() => {
+                    showToast('Link copied!');
+                });
+            } else {
+                // Fallback
+                const temp = document.createElement('textarea');
+                temp.value = link;
+                document.body.appendChild(temp);
+                temp.select();
+                document.execCommand('copy');
+                document.body.removeChild(temp);
+                showToast('Link copied!');
+            }
+        }
+        
+        // Share Link
+        function shareLink() {
+            const link = "{{ src }}";
+            const title = "{{ file_name }}";
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: title,
+                    url: link
+                }).catch(() => {});
+            } else {
+                copyLink();
+            }
+        }
+        
+        // Toast Notification
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+        
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            switch(e.key) {
+                case ' ':
+                    e.preventDefault();
+                    togglePlay();
+                    break;
+                case 'f':
+                case 'F':
+                    toggleFullscreen();
+                    break;
+                case 'ArrowLeft':
+                    videoPlayer.currentTime -= 10;
+                    break;
+                case 'ArrowRight':
+                    videoPlayer.currentTime += 10;
+                    break;
+            }
+        });
+    </script>
+</body>
+</html>
