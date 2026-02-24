@@ -181,7 +181,7 @@ MSG_HELP = (
 )
 
 MSG_ABOUT = (
-    "🌟 **About Thunder File to Link Bot** ℹ️\n\n"
+    "🌟 **About suhani File to Link Bot** ℹ️\n\n"
     "I'm your go-to bot for **instant download & streaming!** ⚡\n\n"
     "**🚀 Key Features:**\n"
     "> **Instant Links:** Get your links within seconds.\n"
@@ -396,3 +396,4 @@ MSG_SYSTEM_STATS = (
 )
 
 MSG_DB_STATS = "📊 **Database Statistics**\n\n> 👥 **Total Users:** `{total_users}`"
+
