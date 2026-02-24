@@ -123,7 +123,7 @@ def parse_range_header(range_header: str, file_size: int) -> tuple[int, int]:
 
 @routes.get("/", allow_head=True)
 async def root_redirect(request):
-    raise web.HTTPFound("https://github.com/fyaz05/FileToLink")
+    raise web.HTTPFound("https://t.me/SuhaniBots")
 
 
 @routes.get("/status", allow_head=True)
@@ -322,3 +322,4 @@ async def media_delivery(request: web.Request):
         logger.error(f"Server error {error_id}: {e}", exc_info=True)
         raise web.HTTPInternalServerError(
             text=f"An unexpected server error occurred: {error_id}") from e
+
